@@ -7,24 +7,19 @@ h = 10
 tk = Tk()
 win = Canvas(tk, width=w * 50, height=h * 50)
 cells = [1] * w
-i = 0
-while i < w:
+for i in range(0, w):
     cells[i] = [0] * h
-    i += 1
 
-i = 0
-i1 = 0
-while i < w:
-    while i1 < h:
+for i in range(0, w):
+    for i1 in range(0, h):
         cells[i][i1] = randint(0, 1)
-        i1 += 1
     i1 = 0
-    i += 1
 
 class ENGINE(object):
 
     def __init__(self, cells, w, h):
         self.cells = cells
+        self.new_cells = cells
         self.w = w
         self.h = h
         self.neig = 0
@@ -36,13 +31,11 @@ class ENGINE(object):
         x = self.sx
         y = self.sy
         win.delete(ALL)
-        while x < self.w:
-            while y < self.h:
+        for x, non in enumerate(self.cells):
+            for y, non in enumerate(self.cells[x]):
                 if self.cells[x][y] == 1:
                     win.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="green")
-                y += 1
             y = 0
-            x += 1
         win.pack()
 
     def DoSoN(self, present):  # Die or Sex or None
@@ -69,22 +62,25 @@ class ENGINE(object):
             y = self.sy - 1
             x += 1
         dsn = self.DoSoN(self.cells[self.sx][self.sy])
-        self.cells[self.sx][self.sy] = dsn
+        self.new_cells[self.sx][self.sy] = dsn
         self.neig = 0
 
     def life(self):
-        while self.sx < self.w:
-            while self.sy < self.h:
+        for self.sx, non in enumerate(self.cells):
+            for self.sy, non in enumerate(self.cells[self.sx]):
                 self.neighbors()
-                self.sy += 1
-            self.sx += 1
             self.sy = 0
         self.sx = 0
         self.sy = 0
-        self.repaint()
-        Timer(0.1, self.life).start()
+        self.cells = self.new_cells
+        if __name__ == '__main__':
+            self.repaint()
+            Timer(0.1, self.life).start()
+        else:
+            return self.cells
 
 
 en = ENGINE(cells, w, h)
-en.life()
-win.mainloop()
+if __name__ == '__main__':
+    en.life()
+    win.mainloop()
